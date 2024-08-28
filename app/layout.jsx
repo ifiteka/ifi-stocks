@@ -20,21 +20,19 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
 
-  console.log(session);
-
   return (
     <html>
       <body className={montserrat.className}>
         <SessionWrapper session={session}>
-          {session ? (
+          {session && session.user ? (
             <>
-              <Navbar />
+              <Navbar session={session} />
               <main className="flex min-h-screen flex-col items-center pt-28">
                 {children}
               </main>
             </>
           ) : (
-            <main className="flex h-screen flex-col items-center justify-center">
+            <main className="flex h-screen flex-col items-center justify-center bg-[url('/IFISTOX.png')] bg-center bg-no-repeat">
               <Login />
             </main>
           )}
