@@ -10,8 +10,9 @@ import {
   Legend,
   Title,
 } from "chart.js";
-import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "@/firebase/config";
+import { getCollection } from "@/app/actions";
 
 ChartJS.register(
   LinearScale,
@@ -33,20 +34,34 @@ const StockPage = ({ params }) => {
 
   useEffect(() => {
     const unsub = onSnapshot(doc(firestore, "stocks", stockId), (stock) => {
-      setDatasets((prev) => [
+      const stockData = stock.data();
+      const dataset = [];
+
+      stockData.allPrices.map((stock) => {
+        if (stock.game === "base") {
+          dataset[0] = stock.price;
+          return;
+        }
+
+        dataset[stock.gameIndex + 1] = stock.price;
+      });
+
+      console.log(dataset);
+
+      setDatasets([
         {
-          data: [...prev[0].data, stock.data().price],
+          data: dataset,
           label: stock.data().name,
         },
       ]);
     });
 
     const getAllGames = async () => {
-      const games = await getDocs(collection(firestore, "games"));
-      const newLabels = [];
+      const games = await getCollection("games", true, "index", "asc");
+      const newLabels = ["base"];
 
       games.forEach((game) => {
-        newLabels.push(game.data().name);
+        newLabels.push(game.name);
       });
 
       setLabels(newLabels);
@@ -56,8 +71,6 @@ const StockPage = ({ params }) => {
 
     return () => unsub();
   }, [stockId]);
-
-  console.log(datasets);
 
   return (
     <div className="w-full">

@@ -10,7 +10,9 @@ const StockCard = ({ stock, userId, ...props }) => {
     >
       <p className="uppercase font-semibold text-xl">{stock.name}</p>
 
-      <div></div>
+      <div>
+        <p>{stock.price}</p>
+      </div>
     </Link>
   );
 };
