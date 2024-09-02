@@ -46,8 +46,6 @@ const StockPage = ({ params }) => {
         dataset[stock.gameIndex + 1] = stock.price;
       });
 
-      console.log(dataset);
-
       setDatasets([
         {
           data: dataset,

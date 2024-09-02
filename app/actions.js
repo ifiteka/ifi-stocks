@@ -12,6 +12,7 @@ import {
   query,
   updateDoc,
 } from "firebase/firestore";
+import { revalidatePath } from "next/cache";
 
 export const getCollection = async (coll, useOrdering, orderByField, order) => {
   const data = [];
@@ -28,21 +29,28 @@ export const getCollection = async (coll, useOrdering, orderByField, order) => {
   return data;
 };
 
-export const updatePoints = async (formData) => {
+export const updatePoints = async (prevState, formData) => {
   const team = formData.get("team");
   const points = formData.get("points");
   const game = formData.get("game");
   const teamDocRef = doc(firestore, "stocks", team);
   const gameDocRef = doc(firestore, "games", game);
-  const games = await getCollection("games");
   const teamDoc = await getDoc(teamDocRef);
   const gameDoc = await getDoc(gameDocRef);
+  const games = await getCollection("games");
+
   if (!teamDoc.exists()) {
-    throw new Error(`Team with id: ${team} does not exists!`);
+    return {
+      success: false,
+      message: `Team with id: ${team} does not exists!`,
+    };
   }
 
   if (!gameDoc.exists()) {
-    throw new Error(`Game with id: ${game} does not exists!`);
+    return {
+      success: false,
+      message: `Game with id: ${game} does not exists!`,
+    };
   }
 
   const teamData = teamDoc.data();
@@ -58,14 +66,20 @@ export const updatePoints = async (formData) => {
     totalPoints: teamData.totalPoints + Number(points),
   };
 
-  if (games[gameData.index - 1].points.length === 0) {
-    throw new Error(`Please add points for the previous game!`);
+  if (gameData.index !== 0 && games[gameData?.index - 1].points.length === 0) {
+    return {
+      success: false,
+      message: `Please add points for the previous game!`,
+    };
   } else {
     const newGameData = {
-      points: [...gameData.points, { team: teamData.name, points }],
+      points: [...gameData.points, { team: teamData.teamName, points }],
     };
     await updateDoc(gameDocRef, newGameData);
   }
-
   await updateDoc(teamDocRef, newStockData);
+
+  revalidatePath("/admin/point-upload");
+
+  return { success: true, message: "Points added successfully" };
 };
