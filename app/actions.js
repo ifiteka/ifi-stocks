@@ -35,9 +35,11 @@ export const updatePoints = async (prevState, formData) => {
   const game = formData.get("game");
   const teamDocRef = doc(firestore, "stocks", team);
   const gameDocRef = doc(firestore, "games", game);
-  const teamDoc = await getDoc(teamDocRef);
-  const gameDoc = await getDoc(gameDocRef);
-  const games = await getCollection("games");
+  const [teamDoc, gameDoc, games] = await Promise.all([
+    getDoc(teamDocRef),
+    getDoc(gameDocRef),
+    getCollection("games"),
+  ]);
 
   if (!teamDoc.exists()) {
     return {
@@ -82,4 +84,32 @@ export const updatePoints = async (prevState, formData) => {
   revalidatePath("/admin/point-upload");
 
   return { success: true, message: "Points added successfully" };
+};
+
+export const updateBalance = async (prevState, formData) => {
+  const mentor = formData.get("mentor");
+  const amount = formData.get("amount");
+  const mentorDocRef = doc(firestore, "users", mentor);
+  const mentorDoc = await getDoc(mentorDocRef);
+
+  console.log(mentor);
+
+  if (Number(amount) === NaN) {
+    return { success: false, message: "Only numbers are allowed!" };
+  }
+
+  if (!mentorDoc.exists()) {
+    return { success: false, message: `There is no user with id: ${mentor}!` };
+  }
+
+  const mentorData = mentorDoc.data();
+
+  await updateDoc(mentorDocRef, {
+    balance:
+      mentorData.balance === undefined
+        ? Number(amount)
+        : mentorData.balance + Number(amount),
+  });
+
+  return { success: true, message: "Amount added successfully!" };
 };

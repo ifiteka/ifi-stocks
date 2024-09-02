@@ -1,8 +1,9 @@
 "use client";
 
 import { getCollection, updatePoints } from "@/app/actions";
+import SubmitButton from "@/components/SubmitButton";
 import { useEffect, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 
 const initialState = {
   message: "",
@@ -99,7 +100,7 @@ const PointUpload = () => {
             />
           </div>
           <div className="mt-10">
-            <Submit />
+            <SubmitButton />
           </div>
         </form>
       )}
@@ -108,17 +109,3 @@ const PointUpload = () => {
 };
 
 export default PointUpload;
-
-const Submit = () => {
-  const status = useFormStatus();
-
-  return (
-    <button
-      disabled={status.pending}
-      type="submit"
-      className="px-4 py-3 border border-neutral-400 rounded-lg"
-    >
-      Submit
-    </button>
-  );
-};
