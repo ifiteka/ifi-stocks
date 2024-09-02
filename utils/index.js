@@ -1,5 +1,4 @@
 export const calcPrice = (current, points) => {
-
   if (points < 0) {
     return current + current * 0.5 * -1;
   }
@@ -40,3 +39,8 @@ export const calcPrice = (current, points) => {
     return current + current * 0.15;
   }
 };
+
+export const skipped = (ctx, value) =>
+  ctx.p0.skip || ctx.p1.skip ? value : undefined;
+export const down = (ctx, value) =>
+  ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;

@@ -13,6 +13,7 @@ import {
 import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "@/firebase/config";
 import { getCollection } from "@/app/actions";
+import { down, skipped } from "@/utils";
 
 ChartJS.register(
   LinearScale,
@@ -25,7 +26,12 @@ ChartJS.register(
 
 const StockPage = ({ params }) => {
   const { stockId } = params;
-  const [datasets, setDatasets] = useState([{ data: [], label: "" }]);
+  const [datasets, setDatasets] = useState([
+    {
+      data: [],
+      label: "",
+    },
+  ]);
   const [labels, setLabels] = useState([]);
   const chartData = {
     labels,
@@ -46,10 +52,17 @@ const StockPage = ({ params }) => {
         dataset[stock.gameIndex + 1] = stock.price;
       });
 
-      setDatasets([
+      setDatasets((prev) => [
         {
           data: dataset,
           label: stock.data().name,
+          borderColor: "rgb(75, 192, 192)",
+          pointStyle: false,
+          segment: {
+            borderColor: (ctx) =>
+              skipped(ctx, "rgb(0,0,0,0.2)") || down(ctx, "rgb(192,75,75)"),
+            borderDash: (ctx) => skipped(ctx, [6, 6]),
+          },
         },
       ]);
     });

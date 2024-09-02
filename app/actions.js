@@ -68,7 +68,10 @@ export const updatePoints = async (prevState, formData) => {
     totalPoints: teamData.totalPoints + Number(points),
   };
 
-  if (gameData.index !== 0 && games[gameData?.index - 1].points.length === 0) {
+  if (
+    games[gameData?.index - 1] !== undefined &&
+    games[gameData?.index - 1].points === 0
+  ) {
     return {
       success: false,
       message: `Please add points for the previous game!`,
@@ -113,3 +116,7 @@ export const updateBalance = async (prevState, formData) => {
 
   return { success: true, message: "Amount added successfully!" };
 };
+
+export const handleBuy = async (prevState, formData) => {};
+
+export const handleSell = async (prevState, formData) => {};
