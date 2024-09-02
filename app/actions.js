@@ -10,6 +10,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { revalidatePath } from "next/cache";
@@ -27,6 +28,12 @@ export const getCollection = async (coll, useOrdering, orderByField, order) => {
   });
 
   return data;
+};
+
+export const getDocument = async (coll, id) => {
+  const res = await getDoc(doc(firestore, coll, id));
+
+  return res.data();
 };
 
 export const updatePoints = async (prevState, formData) => {
@@ -62,9 +69,13 @@ export const updatePoints = async (prevState, formData) => {
   const newStockData = {
     allPrices: [
       ...teamData.allPrices,
-      { game: gameData.name, gameIndex: gameData.index, price: newPrice },
+      {
+        game: gameData.name,
+        gameIndex: gameData.index,
+        price: Math.round(newPrice),
+      },
     ],
-    price: newPrice,
+    price: Math.round(newPrice),
     totalPoints: teamData.totalPoints + Number(points),
   };
 
@@ -95,8 +106,6 @@ export const updateBalance = async (prevState, formData) => {
   const mentorDocRef = doc(firestore, "users", mentor);
   const mentorDoc = await getDoc(mentorDocRef);
 
-  console.log(mentor);
-
   if (Number(amount) === NaN) {
     return { success: false, message: "Only numbers are allowed!" };
   }
@@ -117,6 +126,79 @@ export const updateBalance = async (prevState, formData) => {
   return { success: true, message: "Amount added successfully!" };
 };
 
-export const handleBuy = async (prevState, formData) => {};
+export const handleBuy = async (args, prevState, formData) => {
+  const amount = Number(formData.get("amount"));
+  const { stockId, userId } = args;
+  const [stock, user] = await Promise.all([
+    getDocument("stocks", stockId),
+    getDocument("users", userId),
+  ]);
 
-export const handleSell = async (prevState, formData) => {};
+  const currentStock = user?.stocks?.find((stock) => stock.stockId === stockId);
+
+  if (currentStock) {
+    currentStock.amount += amount;
+  }
+
+  await Promise.all([
+    updateDoc(doc(firestore, "stocks", stockId), {
+      activeShares: stock.activeShares - amount,
+    }),
+    updateDoc(doc(firestore, "users", userId), {
+      stocks: currentStock
+        ? user.stocks
+        : [...user.stocks, { stockId, amount }],
+      balance: user.balance - Math.round(stock.price * amount),
+      transactions: [
+        ...user.transactions,
+        {
+          stockId,
+          amount,
+          date: new Date().toLocaleDateString(),
+          price: stock.price,
+          type: "buy",
+        },
+      ],
+    }),
+  ]);
+};
+
+export const handleSell = async (args, prevState, formData) => {
+  const amount = Number(formData.get("amount"));
+  const { stockId, userId } = args;
+
+  const [stock, user] = await Promise.all([
+    getDocument("stocks", stockId),
+    getDocument("users", userId),
+  ]);
+
+  const currentStock = user?.stocks?.find((stock) => stock.stockId === stockId);
+
+  if (currentStock) {
+    currentStock.amount -= amount;
+  }
+
+  await Promise.all([
+    updateDoc(doc(firestore, "stocks", stockId), {
+      activeShares: stock.activeShares + amount,
+    }),
+    updateDoc(doc(firestore, "users", userId), {
+      stocks: currentStock
+        ? user.stocks
+        : [...user.stocks, { stockId, amount }],
+      balance: user.balance + Math.round(stock.price * amount),
+      transactions: [
+        ...user.transactions,
+        {
+          stockId,
+          amount,
+          date: new Date().toLocaleDateString(),
+          price: stock.price,
+          type: "sell",
+        },
+      ],
+    }),
+  ]);
+
+  revalidatePath(`${userId}/market/${stockId}`);
+};
