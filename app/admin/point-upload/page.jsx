@@ -37,15 +37,15 @@ const PointUpload = () => {
   useEffect(() => {
     setMessageOpen(true);
     let timeout;
-    if (state.success && form.current) {
+    if (state.message && form.current) {
       timeout = setTimeout(() => {
         form.current.reset();
         setMessageOpen(false);
-      }, 1000);
+      }, 5000);
     }
 
     return () => clearTimeout(timeout);
-  }, [state.success]);
+  }, [state]);
 
   return (
     <div className="size-full flex justify-center grow">

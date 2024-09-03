@@ -64,6 +64,14 @@ export const updatePoints = async (prevState, formData) => {
 
   const teamData = teamDoc.data();
   const gameData = gameDoc.data();
+
+  if (Number(points) > gameData.maxPoints) {
+    return {
+      success: false,
+      message: `Could not add more points, than the game's maximum points (${gameData.maxPoints})`,
+    };
+  }
+
   const newPrice = calcPrice(
     teamData.price,
     Number(points),
@@ -83,6 +91,16 @@ export const updatePoints = async (prevState, formData) => {
     totalPoints: teamData.totalPoints + Number(points),
   };
 
+  const hasPointsAddedForCurrentGame =
+    gameData.points.find((point) => point.stockId === team) || null;
+
+  if (hasPointsAddedForCurrentGame) {
+    return {
+      success: false,
+      message: `${teamData.teamName} already has points added for ${gameData.name}`,
+    };
+  }
+
   if (
     games[gameData?.index - 1] !== undefined &&
     games[gameData?.index - 1].points === 0
@@ -93,7 +111,10 @@ export const updatePoints = async (prevState, formData) => {
     };
   } else {
     const newGameData = {
-      points: [...gameData.points, { team: teamData.teamName, points }],
+      points: [
+        ...gameData.points,
+        { team: teamData.teamName, points, stockId: team },
+      ],
     };
     await updateDoc(gameDocRef, newGameData);
   }

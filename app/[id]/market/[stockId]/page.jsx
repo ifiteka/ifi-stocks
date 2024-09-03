@@ -100,7 +100,7 @@ const StockPage = ({ params }) => {
       unsub();
       unsubUser();
     };
-  }, [stockId]);
+  }, [stockId, userId]);
 
   const userStock = user?.stocks?.find((stock) => stock.stockId === stockId);
 
