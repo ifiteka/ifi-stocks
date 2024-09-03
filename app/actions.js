@@ -64,7 +64,11 @@ export const updatePoints = async (prevState, formData) => {
 
   const teamData = teamDoc.data();
   const gameData = gameDoc.data();
-  const newPrice = calcPrice(teamData.price, Number(points));
+  const newPrice = calcPrice(
+    teamData.price,
+    Number(points),
+    gameData.maxPoints
+  );
 
   const newStockData = {
     allPrices: [
@@ -154,7 +158,7 @@ export const handleBuy = async (args, prevState, formData) => {
         {
           stockId,
           amount,
-          date: new Date().toLocaleDateString(),
+          date: `${new Date().toLocaleDateString()}, ${new Date().toLocaleTimeString()}`,
           price: stock.price,
           type: "buy",
         },
@@ -199,7 +203,7 @@ export const handleSell = async (args, prevState, formData) => {
         {
           stockId,
           amount,
-          date: new Date().toLocaleDateString(),
+          date: `${new Date().toLocaleDateString()}, ${new Date().toLocaleTimeString()}`,
           price: stock.price,
           type: "sell",
         },

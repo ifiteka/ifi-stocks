@@ -19,17 +19,17 @@ const Navbar = ({ session }) => {
         </Link>
         <nav className="flex gap-4 font-semibold">
           <Link href="/">Home</Link>
-          {/* {session.user.role !== "admin" ? (
+          {session.user.role !== "admin" ? (
             <>
               <Link href={`/${session?.user?.id}/market`}>Market</Link>
               <Link href={`/${session?.user?.id}/portfolio`}>Portfolio</Link>
             </>
-          ): <>
-            <Link href={'/admin/money-upload'}>Money upload</Link>
-            <Link href={'/admin/point-upload'}>Point upload</Link>
-          </>} */}
-          <Link href={`/${session?.user?.id}/market`}>Market</Link>
-          <Link href={`/${session?.user?.id}/portfolio`}>Portfolio</Link>
+          ) : (
+            <>
+              <Link href={"/admin/money-upload"}>Money upload</Link>
+              <Link href={"/admin/point-upload"}>Point upload</Link>
+            </>
+          )}
           <button onClick={() => signOut()}>Sign Out</button>
         </nav>
       </div>

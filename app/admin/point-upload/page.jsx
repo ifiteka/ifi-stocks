@@ -2,7 +2,7 @@
 
 import { getCollection, updatePoints } from "@/app/actions";
 import SubmitButton from "@/components/SubmitButton";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 
 const initialState = {
@@ -10,9 +10,11 @@ const initialState = {
 };
 
 const PointUpload = () => {
+  const form = useRef(null);
   const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
   const [state, formAction] = useFormState(updatePoints, initialState);
 
   useEffect(() => {
@@ -32,14 +34,28 @@ const PointUpload = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    setMessageOpen(true);
+    let timeout;
+    if (state.success && form.current) {
+      timeout = setTimeout(() => {
+        form.current.reset();
+        setMessageOpen(false);
+      }, 1000);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [state.success]);
+
   return (
     <div className="size-full flex justify-center grow">
       {!loading && (
         <form
+          ref={form}
           className="flex flex-col gap-4 items-center justify-center w-full max-w-md"
           action={formAction}
         >
-          {state.message && (
+          {state.message && messageOpen && (
             <div
               className={`w-full p-4 border rounded-lg ${
                 state.success

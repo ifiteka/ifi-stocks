@@ -144,7 +144,7 @@ const StockPage = ({ params }) => {
         <Line data={chartData}></Line>
       </div>
       <div className="col-span-3 py-3 col-start-10 size-full flex flex-col gap-8">
-        <div className="">
+        <div className="pb-3 border-b border-neutral-400">
           Balance: <span className="font-semibold">{user?.balance}</span>
           {amount > 0 && open !== null && (
             <span
@@ -266,6 +266,8 @@ const StockPage = ({ params }) => {
           </div>
         )}
       </div>
+
+      {/* {user.transactions.length > 0} */}
     </div>
   );
 };
