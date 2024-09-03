@@ -14,7 +14,7 @@ import {
   PointElement,
 } from "chart.js";
 import { collection, doc, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useFormState } from "react-dom";
 
@@ -22,6 +22,8 @@ ChartJS.register(LinearScale, CategoryScale, LineElement, PointElement);
 
 const StockPage = ({ params }) => {
   const { stockId, id: userId } = params;
+  const buyForm = useRef(null);
+  const sellForm = useRef(null);
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(null);
   const [amount, setAmount] = useState(0);
@@ -35,11 +37,11 @@ const StockPage = ({ params }) => {
   const [labels, setLabels] = useState([]);
   const [buyState, buyFormAction] = useFormState(
     handleBuy.bind(null, { stockId, userId }),
-    null
+    { success: false, message: "" }
   );
   const [sellState, sellFormAction] = useFormState(
     handleSell.bind(null, { stockId, userId }),
-    null
+    { success: false, message: "" }
   );
   const chartData = {
     labels,
@@ -113,6 +115,8 @@ const StockPage = ({ params }) => {
       )
     ) {
       buyFormAction(formData);
+      buyForm.current && buyForm.current.reset();
+      setAmount(0);
     }
   };
 
@@ -126,6 +130,8 @@ const StockPage = ({ params }) => {
       )
     ) {
       sellFormAction(formData);
+      sellForm.current && sellForm.current.reset();
+      setAmount(0);
     }
   };
 
@@ -179,6 +185,7 @@ const StockPage = ({ params }) => {
                   <Plus className="size-4" />
                 </button>
                 <form
+                  ref={buyForm}
                   action={onSubmitBuy}
                   className="w-full flex flex-col items-center"
                 >
@@ -233,6 +240,7 @@ const StockPage = ({ params }) => {
                     <Plus className="size-4" />
                   </button>
                   <form
+                    ref={sellForm}
                     action={onSubmitSell}
                     className="w-full flex flex-col items-center"
                   >

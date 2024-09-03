@@ -161,6 +161,13 @@ export const handleBuy = async (args, prevState, formData) => {
       ],
     }),
   ]);
+
+  revalidatePath(`/${userId}/market/${stockId}`);
+
+  return {
+    success: true,
+    message: `You bought ${amount} share(s) of ${stock.name} successfully!`,
+  };
 };
 
 export const handleSell = async (args, prevState, formData) => {
@@ -201,4 +208,9 @@ export const handleSell = async (args, prevState, formData) => {
   ]);
 
   revalidatePath(`${userId}/market/${stockId}`);
+
+  return {
+    success: true,
+    message: `You sold ${amount} share(s) of ${stock.name} successfully!`,
+  };
 };
