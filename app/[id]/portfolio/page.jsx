@@ -10,8 +10,8 @@ const PortfolioPage = async ({ params }) => {
   const user = await getDocument("users", id);
 
   return (
-    <div className="flex flex-col gap-10 w-full">
-      <div className="border-b border-neutral-400 pb-8">
+    <div className="flex flex-col gap-10 w-full container">
+      <div className="relative pb-8">
         <div className="flex justify-between px-4 items-end gap-5">
           <h2 className="text-3xl font-semibold">{`${user.name}'s portfolio`}</h2>
           <p>
@@ -19,9 +19,10 @@ const PortfolioPage = async ({ params }) => {
             <span className="font-semibold">{user.balance} Tinta</span>
           </p>
         </div>
+        <div className="w-screen h-px -translate-x-6 md:-translate-x-10 xl:-translate-x-[6.75rem] bg-neutral-400 absolute bottom-0"></div>
       </div>
 
-      <div className="border-b border-neutral-400 pb-10">
+      <div className="relative pb-10">
         <div className="w-full flex flex-col gap-5 px-4">
           <p className="text-lg">
             {user.stocks.length === 0
@@ -69,6 +70,7 @@ const PortfolioPage = async ({ params }) => {
             </div>
           )}
         </div>
+        <div className="w-screen h-px -translate-x-6 md:-translate-x-10 xl:-translate-x-[6.75rem] bg-neutral-400 absolute bottom-0"></div>
       </div>
 
       <div className="w-full flex flex-col gap-5 px-4">

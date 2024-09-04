@@ -7,7 +7,7 @@ import Link from "next/link";
 const Navbar = ({ session }) => {
   return (
     <header className="fixed w-full flex items-center bg-black/10 backdrop-blur h-20">
-      <div className="flex w-full items-center justify-between max-w-screen-2xl px-10 mx-auto">
+      <div className="flex w-full items-center justify-between container">
         <Link href="/" className="relative size-16">
           <Image
             src="/IFISTOX.png"

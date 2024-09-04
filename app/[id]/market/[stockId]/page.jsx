@@ -136,7 +136,7 @@ const StockPage = ({ params }) => {
   };
 
   return (
-    <div className="w-full grid grid-cols-12 gap-4 h-full px-4">
+    <div className="w-full grid grid-cols-12 gap-4 h-full container">
       <h1 className="w-full text-5xl mb-8 font-bold text-center row-span-1 col-span-12">
         {datasets[0].label}
       </h1>
