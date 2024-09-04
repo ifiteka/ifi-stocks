@@ -172,7 +172,7 @@ export const handleBuy = async (args, prevState, formData) => {
     updateDoc(doc(firestore, "users", userId), {
       stocks: currentStock
         ? user.stocks
-        : [...user.stocks, { stockId, amount }],
+        : [...user.stocks, { stockId, amount, stockName: stock.name }],
       balance: user.balance - Math.round(stock.price * amount),
       transactions: [
         ...user.transactions,
@@ -216,7 +216,9 @@ export const handleSell = async (args, prevState, formData) => {
     }),
     updateDoc(doc(firestore, "users", userId), {
       stocks: currentStock
-        ? user.stocks
+        ? currentStock.amount === 0
+          ? [...user.stocks.filter((stock) => stock.stockId !== stockId)]
+          : user.stocks
         : [...user.stocks, { stockId, amount }],
       balance: user.balance + Math.round(stock.price * amount),
       transactions: [
