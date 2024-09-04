@@ -1,11 +1,74 @@
-import React from 'react'
+import { getDocument } from "@/app/actions";
+import TransactionCard from "@/components/TransactionCard";
+import Link from "next/link";
+import React from "react";
 
-const page = () => {
+export const revalidate = 60;
+
+const PortfolioPage = async ({ params }) => {
+  const { id } = params;
+  const user = await getDocument("users", id);
+
   return (
-    <div>
-      portfolio page
-    </div>
-  )
-}
+    <div className="flex flex-col gap-10 w-full px-4">
+      <div className="flex justify-between items-end gap-5">
+        <h2 className="text-3xl font-semibold">{`${user.name}'s portfolio`}</h2>
+        <p>
+          Your balance:{" "}
+          <span className="font-semibold">{user.balance} Tinta</span>
+        </p>
+      </div>
 
-export default page
+      <div className="w-full flex flex-col">
+        <p>{user.stock}</p>
+      </div>
+
+      <div className="w-full flex flex-col gap-4">
+        <p className="w-full text-lg">
+          {user.transactions.length > 0 ? (
+            "Transactions:"
+          ) : (
+            <span className="w-full block text-center">
+              There are no transactions yet!
+            </span>
+          )}
+        </p>
+        {user.transactions.length === 0 && (
+          <Link
+            href={`/${id}/market`}
+            className="mx-auto mt-10 font-semibold inline-flex gap-2 items-center group"
+          >
+            Go to market{" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4 group-hover:translate-x-1 transition-transform"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+              />
+            </svg>
+          </Link>
+        )}
+        {user.transactions.length > 0 && (
+          <div className="flex flex-col divide-y divide-neutral-400">
+            {user.transactions.map((transaction, index) => (
+              <TransactionCard
+                key={`transactionCard-${index}`}
+                transaction={transaction}
+                userId={id}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PortfolioPage;

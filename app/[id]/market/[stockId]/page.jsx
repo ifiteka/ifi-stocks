@@ -145,7 +145,7 @@ const StockPage = ({ params }) => {
       </div>
       <div className="col-span-3 py-3 col-start-10 size-full flex flex-col gap-8">
         <div className="pb-3 border-b border-neutral-400">
-          Balance: <span className="font-semibold">{user?.balance}</span>
+          Balance: <span className="font-semibold">{user?.balance} Tinta</span>
           {amount > 0 && open !== null && (
             <span
               className={open === "buy" ? "text-red-700" : "text-green-700"}
@@ -266,8 +266,6 @@ const StockPage = ({ params }) => {
           </div>
         )}
       </div>
-
-      {/* {user.transactions.length > 0} */}
     </div>
   );
 };

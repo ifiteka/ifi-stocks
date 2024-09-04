@@ -8,7 +8,7 @@ import Login from "@/components/Login";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata = {
