@@ -34,7 +34,7 @@ const MoneyUpload = () => {
       timeout = setTimeout(() => {
         form.current.reset();
         setMessageOpen(false);
-      }, 5000);
+      }, 2000);
     }
 
     return () => clearTimeout(timeout);

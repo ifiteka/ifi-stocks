@@ -39,9 +39,8 @@ const PointUpload = () => {
     let timeout;
     if (state.message && form.current) {
       timeout = setTimeout(() => {
-        form.current.reset();
         setMessageOpen(false);
-      }, 5000);
+      }, 2000);
     }
 
     return () => clearTimeout(timeout);
