@@ -143,105 +143,52 @@ const StockPage = ({ params }) => {
       <div className="col-span-1 lg:row-start-2 lg:col-span-9 min-h-60 lg:w-full lg:h-[450px] [&_canvas]:!h-full">
         <Line data={chartData} options={{ maintainAspectRatio: false }}></Line>
       </div>
-      <div className="lg:col-span-3 py-3 lg:col-start-10 size-full flex flex-col gap-8">
-        <div className="pb-3 border-b border-neutral-400">
-          Balance: <span className="font-semibold">{user?.balance} Tinta</span>
-          {amount > 0 && open !== null && (
-            <span
-              className={open === "buy" ? "text-red-700" : "text-green-700"}
-            >
-              {open === "buy"
-                ? ` - ${Math.round(amount * price)}`
-                : ` + ${Math.round(amount * price)}`}
-            </span>
-          )}
-        </div>
-
-        <div>
-          <div
-            className="flex items-center justify-between cursor-pointer"
-            onClick={() => setOpen((prev) => (prev === "buy" ? null : "buy"))}
-          >
-            Buy
-            <Chevron
-              className={`transition-transform duration-300 ${
-                open === "buy" ? "rotate-180" : "rotate-0"
-              }`}
-            />
+      {user && user.balance && user.balance > 0 && (
+        <div className="lg:col-span-3 py-3 lg:col-start-10 size-full flex flex-col gap-8">
+          <div className="pb-3 border-b border-neutral-400">
+            Balance:{" "}
+            <span className="font-semibold">{user?.balance} Tinta</span>
+            {amount > 0 && open !== null && (
+              <span
+                className={open === "buy" ? "text-red-700" : "text-green-700"}
+              >
+                {open === "buy"
+                  ? ` - ${Math.round(amount * price)}`
+                  : ` + ${Math.round(amount * price)}`}
+              </span>
+            )}
           </div>
 
-          <div
-            className={`w-full grid transition-[grid-template-rows] duration-300 ${
-              open === "buy" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="overflow-hidden">
-              <div className="mt-4 flex gap-2 items-start">
-                <button
-                  disabled={Math.round(amount * price) === user?.balance}
-                  onClick={() => setAmount((prev) => prev + 1)}
-                  className="mt-1 disabled:opacity-50"
-                >
-                  <Plus className="size-4" />
-                </button>
-                <form
-                  ref={buyForm}
-                  action={onSubmitBuy}
-                  className="w-full flex flex-col items-center"
-                >
-                  <input
-                    type="text"
-                    className="text-center"
-                    id="amount"
-                    name="amount"
-                    value={amount}
-                  />
-                  <SubmitButton text="Buy" className="mt-2 w-full" />
-                </form>
-                <button
-                  disabled={amount === 0}
-                  onClick={() => setAmount((prev) => prev - 1)}
-                  className="mt-1 disabled:opacity-50"
-                >
-                  <Minus className="size-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {user && userStock && userStock.amount > 0 && (
           <div>
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() =>
-                setOpen((prev) => (prev === "sell" ? null : "sell"))
-              }
+              onClick={() => setOpen((prev) => (prev === "buy" ? null : "buy"))}
             >
-              Sell
+              Buy
               <Chevron
                 className={`transition-transform duration-300 ${
-                  open === "sell" ? "rotate-180" : "rotate-0"
+                  open === "buy" ? "rotate-180" : "rotate-0"
                 }`}
               />
             </div>
 
             <div
               className={`w-full grid transition-[grid-template-rows] duration-300 ${
-                open === "sell" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                open === "buy" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
               }`}
             >
               <div className="overflow-hidden">
                 <div className="mt-4 flex gap-2 items-start">
                   <button
-                    disabled={userStock.amount === amount}
+                    disabled={Math.round(amount * price) === user?.balance}
                     onClick={() => setAmount((prev) => prev + 1)}
                     className="mt-1 disabled:opacity-50"
                   >
                     <Plus className="size-4" />
                   </button>
                   <form
-                    ref={sellForm}
-                    action={onSubmitSell}
+                    ref={buyForm}
+                    action={onSubmitBuy}
                     className="w-full flex flex-col items-center"
                   >
                     <input
@@ -251,7 +198,7 @@ const StockPage = ({ params }) => {
                       name="amount"
                       value={amount}
                     />
-                    <SubmitButton text="Sell" className="w-full mt-2" />
+                    <SubmitButton text="Buy" className="mt-2 w-full" />
                   </form>
                   <button
                     disabled={amount === 0}
@@ -264,8 +211,64 @@ const StockPage = ({ params }) => {
               </div>
             </div>
           </div>
-        )}
-      </div>
+          {user && userStock && userStock.amount > 0 && (
+            <div>
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() =>
+                  setOpen((prev) => (prev === "sell" ? null : "sell"))
+                }
+              >
+                Sell
+                <Chevron
+                  className={`transition-transform duration-300 ${
+                    open === "sell" ? "rotate-180" : "rotate-0"
+                  }`}
+                />
+              </div>
+
+              <div
+                className={`w-full grid transition-[grid-template-rows] duration-300 ${
+                  open === "sell" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="mt-4 flex gap-2 items-start">
+                    <button
+                      disabled={userStock.amount === amount}
+                      onClick={() => setAmount((prev) => prev + 1)}
+                      className="mt-1 disabled:opacity-50"
+                    >
+                      <Plus className="size-4" />
+                    </button>
+                    <form
+                      ref={sellForm}
+                      action={onSubmitSell}
+                      className="w-full flex flex-col items-center"
+                    >
+                      <input
+                        type="text"
+                        className="text-center"
+                        id="amount"
+                        name="amount"
+                        value={amount}
+                      />
+                      <SubmitButton text="Sell" className="w-full mt-2" />
+                    </form>
+                    <button
+                      disabled={amount === 0}
+                      onClick={() => setAmount((prev) => prev - 1)}
+                      className="mt-1 disabled:opacity-50"
+                    >
+                      <Minus className="size-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
