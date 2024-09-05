@@ -48,7 +48,7 @@ const PointUpload = () => {
   }, [state]);
 
   return (
-    <div className="size-full flex justify-center grow">
+    <div className="size-full flex justify-center grow container">
       {!loading && (
         <form
           ref={form}

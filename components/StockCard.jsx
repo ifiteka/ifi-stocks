@@ -8,10 +8,14 @@ const StockCard = ({ stock, userId, ...props }) => {
       {...props}
       className="w-full py-6 flex items-center justify-between"
     >
-      <p className="uppercase font-semibold text-xl">{stock.name}</p>
+      <p className="uppercase font-extrabold text-base lg:text-xl">
+        {stock.name}
+      </p>
 
       <div>
-        <p>{stock.price}</p>
+        <p className="text-base">
+          <span className="font-semibold">{stock.price}</span> Tinta
+        </p>
       </div>
     </Link>
   );

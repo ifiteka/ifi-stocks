@@ -20,7 +20,7 @@ const MarketPage = ({ params }) => {
 
   return (
     <div className="container w-full">
-      <h1 className="text-5xl font-bold text-center mb-16">
+      <h1 className="text-3xl lg:text-5xl font-bold text-center mb-16">
         Welcome in the market!
       </h1>
       <div className="border-y divide-y flex flex-col">

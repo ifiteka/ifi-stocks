@@ -13,7 +13,7 @@ import {
   LineElement,
   PointElement,
 } from "chart.js";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useFormState } from "react-dom";
@@ -136,14 +136,14 @@ const StockPage = ({ params }) => {
   };
 
   return (
-    <div className="w-full grid grid-cols-12 gap-4 h-full container">
-      <h1 className="w-full text-5xl mb-8 font-bold text-center row-span-1 col-span-12">
+    <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 h-full container">
+      <h1 className="w-full text-3xl lg:text-5xl mb-8 font-bold text-center row-span-1 lg:col-span-12">
         {datasets[0].label}
       </h1>
-      <div className="row-start-2 col-span-9 size-full">
-        <Line data={chartData}></Line>
+      <div className="col-span-1 lg:row-start-2 lg:col-span-9 min-h-60 lg:w-full lg:h-[450px] [&_canvas]:!h-full">
+        <Line data={chartData} options={{ maintainAspectRatio: false }}></Line>
       </div>
-      <div className="col-span-3 py-3 col-start-10 size-full flex flex-col gap-8">
+      <div className="lg:col-span-3 py-3 lg:col-start-10 size-full flex flex-col gap-8">
         <div className="pb-3 border-b border-neutral-400">
           Balance: <span className="font-semibold">{user?.balance} Tinta</span>
           {amount > 0 && open !== null && (

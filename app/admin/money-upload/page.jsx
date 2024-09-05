@@ -27,7 +27,7 @@ const MoneyUpload = () => {
   }, []);
 
   return (
-    <div className="size-full flex justify-center grow">
+    <div className="size-full flex justify-center grow container">
       {!loading && (
         <form
           className="flex flex-col gap-4 items-center justify-center w-full max-w-md"

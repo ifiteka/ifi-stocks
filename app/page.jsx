@@ -23,11 +23,13 @@ const Home = () => {
 
   return (
     <div className="w-full container">
-      {data?.user && <h1 className="text-7xl font-extrabold mt-10 mb-24">
-        Welcome, {data?.user?.name}!
-      </h1>}
+      {data?.user && (
+        <h1 className="text-4xl lg:text-7xl font-extrabold text-center mt-10 mb-24">
+          Welcome, {data?.user?.name}!
+        </h1>
+      )}
       <div className="w-full flex flex-col gap-5">
-        <p className="text-lg">
+        <p className="text-sm lg:text-lg">
           {user?.stocks?.length === 0
             ? "You don't have any open positions yet."
             : "Your open positions:"}
@@ -61,10 +63,10 @@ const Home = () => {
                 key={`position-${index}`}
                 className="flex items-end justify-between"
               >
-                <p className="font-extrabold uppercase text-xl">
+                <p className="font-extrabold uppercase text-base lg:text-xl">
                   {stock.stockName}
                 </p>
-                <p>
+                <p className="text-sm lg:text-bases">
                   Amount: <span className="font-semibold">{stock.amount}</span>
                 </p>
               </div>

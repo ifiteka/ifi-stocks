@@ -13,8 +13,8 @@ const PortfolioPage = async ({ params }) => {
     <div className="flex flex-col gap-10 w-full container">
       <div className="relative pb-8">
         <div className="flex justify-between px-4 items-end gap-5">
-          <h2 className="text-3xl font-semibold">{`${user.name}'s portfolio`}</h2>
-          <p>
+          <h2 className="text-lg lg:text-3xl font-semibold">{`${user.name}'s portfolio`}</h2>
+          <p className="text-sm lg:text-base">
             Your balance:{" "}
             <span className="font-semibold">{user.balance} Tinta</span>
           </p>
@@ -24,7 +24,7 @@ const PortfolioPage = async ({ params }) => {
 
       <div className="relative pb-10">
         <div className="w-full flex flex-col gap-5 px-4">
-          <p className="text-lg">
+          <p className="text-base lg:text-lg">
             {user.stocks.length === 0
               ? "You don't have any open positions."
               : "Your open positions:"}
@@ -58,10 +58,10 @@ const PortfolioPage = async ({ params }) => {
                   key={`position-${index}`}
                   className="flex items-end justify-between"
                 >
-                  <p className="font-extrabold uppercase text-xl">
+                  <p className="font-extrabold uppercase text-base lg:text-xl">
                     {stock.stockName}
                   </p>
-                  <p>
+                  <p className="text-sm lg:text-base">
                     Amount:{" "}
                     <span className="font-semibold">{stock.amount}</span>
                   </p>
