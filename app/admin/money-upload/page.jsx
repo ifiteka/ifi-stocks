@@ -13,6 +13,7 @@ const MoneyUpload = () => {
   const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [state, formAction] = useFormState(updateBalance, initialState);
+  const [messageOpen, setMessageOpen] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -26,6 +27,19 @@ const MoneyUpload = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    setMessageOpen(true);
+    let timeout;
+    if (state.message && form.current) {
+      timeout = setTimeout(() => {
+        form.current.reset();
+        setMessageOpen(false);
+      }, 5000);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [state]);
+
   return (
     <div className="size-full flex justify-center grow container">
       {!loading && (
@@ -33,7 +47,7 @@ const MoneyUpload = () => {
           className="flex flex-col gap-4 items-center justify-center w-full max-w-md"
           action={formAction}
         >
-          {state.message && (
+          {state.message && messageOpen && (
             <div
               className={`w-full p-4 border rounded-lg ${
                 state.success
