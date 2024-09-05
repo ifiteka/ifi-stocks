@@ -65,62 +65,119 @@ export const updatePoints = async (prevState, formData) => {
   const teamData = teamDoc.data();
   const gameData = gameDoc.data();
 
-  if (Number(points) > gameData.maxPoints) {
-    return {
-      success: false,
-      message: `Could not add more points, than the game's maximum points (${gameData.maxPoints})`,
-    };
-  }
+  if (gameData.name !== "Minus/plus") {
+    if (Number(points) > gameData.maxPoints) {
+      return {
+        success: false,
+        message: `Could not add more points, than the game's maximum points (${gameData.maxPoints})`,
+      };
+    }
 
-  const newPrice = calcPrice(
-    teamData.price,
-    Number(points),
-    gameData.maxPoints
-  );
+    const newPrice = calcPrice(
+      teamData.price,
+      Number(points),
+      gameData.maxPoints
+    );
 
-  const newStockData = {
-    allPrices: [
-      ...teamData.allPrices,
-      {
-        game: gameData.name,
-        gameIndex: gameData.index,
-        price: Math.round(newPrice),
-      },
-    ],
-    price: Math.round(newPrice),
-    totalPoints: teamData.totalPoints + Number(points),
-  };
-
-  const hasPointsAddedForCurrentGame =
-    gameData.points.find((point) => point.stockId === team) || null;
-
-  if (hasPointsAddedForCurrentGame) {
-    return {
-      success: false,
-      message: `${teamData.teamName} already has points added for ${gameData.name}`,
-    };
-  }
-
-  if (
-    games[gameData?.index - 1] !== undefined &&
-    games[gameData?.index - 1].points === 0
-  ) {
-    return {
-      success: false,
-      message: `Please add points for the previous game!`,
-    };
-  } else {
-    const newGameData = {
-      points: [
-        ...gameData.points,
-        { team: teamData.teamName, points, stockId: team },
+    const newStockData = {
+      allPrices: [
+        ...teamData.allPrices,
+        {
+          game: gameData.name,
+          gameIndex: gameData.index,
+          price: Math.round(newPrice),
+        },
       ],
+      price: Math.round(newPrice),
+      totalPoints: teamData.totalPoints + Number(points),
     };
-    await updateDoc(gameDocRef, newGameData);
-  }
-  await updateDoc(teamDocRef, newStockData);
 
-  revalidatePath("/admin/point-upload");
+    const hasPointsAddedForCurrentGame =
+      gameData.points.find((point) => point.stockId === team) || null;
+
+    if (hasPointsAddedForCurrentGame) {
+      return {
+        success: false,
+        message: `${teamData.teamName} already has points added for ${gameData.name}`,
+      };
+    }
+
+    if (
+      games[gameData?.index - 1] !== undefined &&
+      games[gameData?.index - 1].points === 0
+    ) {
+      return {
+        success: false,
+        message: `Please add points for the previous game!`,
+      };
+    } else {
+      const newGameData = {
+        points: [
+          ...gameData.points,
+          { team: teamData.teamName, points: Number(points), stockId: team },
+        ],
+      };
+      await updateDoc(gameDocRef, newGameData);
+    }
+    await updateDoc(teamDocRef, newStockData);
+
+    revalidatePath("/admin/point-upload");
+  } else {
+    const newPrice = calcPrice(
+      teamData.price,
+      Number(points),
+      gameData.maxPoints
+    );
+
+    const hasStockAlreadyMinusOrPlus = teamData.allPrices.find(
+      (price) => price.gameIndex === gameData.index
+    );
+
+    if (hasStockAlreadyMinusOrPlus) {
+      hasStockAlreadyMinusOrPlus.price = Math.round(newPrice);
+    }
+
+    const newStockData = {
+      allPrices: hasStockAlreadyMinusOrPlus
+        ? teamData.allPrices
+        : [
+            ...teamData.allPrices,
+            {
+              game: gameData.name,
+              gameIndex: gameData.index,
+              price: Math.round(newPrice),
+            },
+          ],
+      price: Math.round(newPrice),
+      totalPoints: teamData.totalPoints + Number(points),
+    };
+
+    const hasAlreadyMinusOrPlus = gameData?.points?.find(
+      (point) => point.stockId === team
+    );
+
+    if (hasAlreadyMinusOrPlus) {
+      hasAlreadyMinusOrPlus.points += Number(points);
+    }
+
+    const newGameData = {
+      points: hasAlreadyMinusOrPlus
+        ? gameData.points
+        : [
+            ...gameData.points,
+            { team: teamData.teamName, points: Number(points), stockId: team },
+          ],
+    };
+
+    await Promise.all([
+      updateDoc(gameDocRef, newGameData),
+      updateDoc(teamDocRef, newStockData),
+    ]);
+
+    revalidatePath("/admin/point-upload");
+
+    return { success: true, message: "Points added successfully" };
+  }
 
   return { success: true, message: "Points added successfully" };
 };

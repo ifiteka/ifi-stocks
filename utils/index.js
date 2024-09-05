@@ -4,7 +4,7 @@ export const calcPercentage = (givenPoints, maxPoints) => {
 
 export const calcPrice = (currentPrice, points, maxPoints) => {
   if (points < 0) {
-    return currentPrice + currentPrice * 0.5 * -1;
+    return currentPrice / 2;
   }
 
   if (points === maxPoints / 2) {
@@ -12,6 +12,7 @@ export const calcPrice = (currentPrice, points, maxPoints) => {
   }
 
   const percent = calcPercentage(points, maxPoints);
+  console.log({ percent });
 
   return currentPrice + currentPrice * percent * (percent < 0.5 ? -1 : 1);
 };
