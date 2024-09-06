@@ -2,7 +2,7 @@
 
 import { getCollection, updateBalance } from "@/app/actions";
 import SubmitButton from "@/components/SubmitButton";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 
 const initialState = {
@@ -14,6 +14,7 @@ const MoneyUpload = () => {
   const [loading, setLoading] = useState(false);
   const [state, formAction] = useFormState(updateBalance, initialState);
   const [messageOpen, setMessageOpen] = useState(false);
+  const form = useRef(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -32,6 +33,7 @@ const MoneyUpload = () => {
     let timeout;
     if (state.message && form.current) {
       timeout = setTimeout(() => {
+        form.current.reset();
         setMessageOpen(false);
       }, 2000);
     }
@@ -43,6 +45,7 @@ const MoneyUpload = () => {
     <div className="size-full flex justify-center grow container">
       {!loading && (
         <form
+          ref={form}
           className="flex flex-col gap-4 items-center justify-center w-full max-w-md"
           action={formAction}
         >
