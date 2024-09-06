@@ -20,8 +20,9 @@ const MoneyUpload = () => {
     const getData = async () => {
       setLoading(true);
       const mentorsData = await getCollection("users");
+      const onlyMentors = mentorsData.filter((user) => user.role !== "admin");
 
-      setMentors(mentorsData);
+      setMentors(onlyMentors);
       setLoading(false);
     };
 
