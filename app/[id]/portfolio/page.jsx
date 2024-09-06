@@ -25,11 +25,11 @@ const PortfolioPage = async ({ params }) => {
       <div className="relative pb-10">
         <div className="w-full flex flex-col gap-5 px-4">
           <p className="text-base lg:text-lg">
-            {user.stocks.length === 0
+            {!user?.stocks || user?.stocks?.length === 0
               ? "You don't have any open positions."
               : "Your open positions:"}
           </p>
-          {user.stocks.length === 0 && (
+          {!user?.stocks || user?.stocks?.length === 0 && (
             <Link
               href={`/${id}/market`}
               className="mx-auto mt-10 font-semibold inline-flex gap-2 items-center group"
@@ -51,9 +51,9 @@ const PortfolioPage = async ({ params }) => {
               </svg>
             </Link>
           )}
-          {user.stocks.length > 0 && (
+          {user?.stocks && user?.stocks?.length > 0 && (
             <div className="flex flex-col divide-y divide-neutral-400">
-              {user.stocks.map((stock, index) => (
+              {user?.stocks?.map((stock, index) => (
                 <div
                   key={`position-${index}`}
                   className="flex items-end justify-between"
@@ -75,7 +75,7 @@ const PortfolioPage = async ({ params }) => {
 
       <div className="w-full flex flex-col gap-5 px-4">
         <p className="w-full text-lg">
-          {user.transactions.length > 0 ? (
+          {user?.transactions && user?.transactions?.length > 0 ? (
             "Transactions:"
           ) : (
             <span className="w-full block text-center">
@@ -83,7 +83,7 @@ const PortfolioPage = async ({ params }) => {
             </span>
           )}
         </p>
-        {user.transactions.length === 0 && (
+        {!user?.transactions || user?.transactions?.length === 0 && (
           <Link
             href={`/${id}/market`}
             className="mx-auto mt-10 font-semibold inline-flex gap-2 items-center group"
@@ -105,7 +105,7 @@ const PortfolioPage = async ({ params }) => {
             </svg>
           </Link>
         )}
-        {user.transactions.length > 0 && (
+        {user?.transactions && user?.transactions?.length > 0 && (
           <div className="flex flex-col divide-y divide-neutral-400">
             {user.transactions.map((transaction, index) => (
               <TransactionCard
