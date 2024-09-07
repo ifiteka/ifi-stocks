@@ -14,7 +14,7 @@ export const calcPrice = (currentPrice, points, maxPoints) => {
   const percent = calcPercentage(points, maxPoints);
 
   return (
-    (currentPrice + currentPrice * percent * (percent < 0.5 ? -1 : 1)) / 1000
+    currentPrice + (currentPrice * percent * (percent < 0.5 ? -1 : 1)) / 10
   );
 };
 
