@@ -12,9 +12,10 @@ export const calcPrice = (currentPrice, points, maxPoints) => {
   }
 
   const percent = calcPercentage(points, maxPoints);
-  console.log({ percent });
 
-  return currentPrice + currentPrice * percent * (percent < 0.5 ? -1 : 1);
+  return (
+    (currentPrice + currentPrice * percent * (percent < 0.5 ? -1 : 1)) / 1000
+  );
 };
 
 export const skipped = (ctx, value) =>
